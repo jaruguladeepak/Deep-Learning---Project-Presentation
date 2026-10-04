@@ -5719,15 +5719,27 @@
                 }
             });
 
-            // Click navigation
-            window.addEventListener('click', (e) => {
-                // Ignore if the user is selecting text
-                if (window.getSelection().toString().length > 0) return;
+            // Click / Swipe navigation
+            let startX = 0;
+            let startY = 0;
 
-                const clickX = e.clientX;
+            window.addEventListener('mousedown', (e) => {
+                startX = e.clientX;
+                startY = e.clientY;
+            });
+
+            window.addEventListener('mouseup', (e) => {
+                const endX = e.clientX;
+                const endY = e.clientY;
+
+                // Ignore if it was a drag/selection (moved more than 10px)
+                if (Math.abs(endX - startX) > 10 || Math.abs(endY - startY) > 10) return;
+
+                // Ignore clicks on links or buttons
+                if (e.target.closest('a') || e.target.closest('button')) return;
+
                 const windowWidth = window.innerWidth;
-
-                if (clickX > windowWidth / 2) {
+                if (endX > windowWidth / 2) {
                     nextSlide();
                 } else {
                     prevSlide();
